@@ -52,9 +52,9 @@ DHT dht(DHT_PIN, DHT_TYPE);
 #define Relay_3  A3
 #define Relay_4  A4
 
-//Pump
+//Motor
 #define PUMP 6  
-int wateringDelay;
+int motorDelay;
 
 //MESSAGES
 #define MSG_METHOD_SUCCESS 0                      //Code which is used when an operation terminated  successfully
@@ -88,10 +88,10 @@ void setup() {
   pinMode(Relay_3, OUTPUT);  
   pinMode(Relay_4, OUTPUT);
 
-  //Pump
+  //Motor
   digitalWrite (PUMP,LOW);   
   pinMode(PUMP,OUTPUT);
-  wateringDelay = 1000;
+  motorDelay = 1000;
   
   
   //Time
@@ -119,8 +119,8 @@ void loop() {
   int r3 = digitalRead(Relay_3);
   int r4 = digitalRead(Relay_4);
 
-  //Pump
-  int watering = digitalRead(PUMP); 
+  //Motor
+  int motor = digitalRead(PUMP); 
 
   //Moisture
   //0-300 dry
@@ -184,14 +184,14 @@ Serial.println(buf);
     Serial.print(r3);
     Serial.println(r4);
   }
-  if (isnan(watering)) {
-    Serial.println("Failed to read from pump");
+  if (isnan(motor)) {
+    Serial.println("Failed to read from motor");
   } 
   else {
-    Serial.print("Pump: ");
-    Serial.println(watering);
-    Serial.print("Pump Delay: ");
-    Serial.println(wateringDelay); 
+    Serial.print("Motor: ");
+    Serial.println(motor);
+    Serial.print("Motor Delay: ");
+    Serial.println(motorDelay); 
   }
 
   String command = "";
@@ -258,11 +258,11 @@ client = server.available();  // try to get client
                         client.print(val,DEC);     
                         //client.println("[lx]");
                         client.println(" lux</p>");
-                        client.print("<p>Pump: ");
-                        client.println(watering);
+                        client.print("<p>Motor: ");
+                        client.println(motor);
                         client.println("</p>");
-                        client.print("<p>Pump delay: ");
-                        client.println(wateringDelay);  
+                        client.print("<p>Motor delay: ");
+                        client.println(motorDelay);  
                         client.println("ms</p>");
                         client.print("<p>Moisture: ");
                         client.print(m/10);
@@ -328,10 +328,10 @@ client = server.available();  // try to get client
         client.print(val, DEC);
         client.print("&moisture=");
         client.print(m/10);
-        client.print("&pump=");
-        client.print(watering);
-        client.print("&pumpdelay=");
-        client.print(wateringDelay);
+        client.print("&motor=");
+        client.print(motor);
+        client.print("&motordelay=");
+        client.print(motorDelay);
         client.print("&r1=");
         client.print(r1);
         client.print("&r2=");
@@ -415,15 +415,15 @@ void processCommand(String command)
       }
       if (command.equals("PUMPUP#"))
       {
-        wateringDelay = wateringDelay + 1000;
+        motorDelay = motorDelay + 1000;
       }
       if (command.equals("PUMPDOWN#"))
       {
-        wateringDelay = wateringDelay - 1000; 
+        motorDelay = motorDelay - 1000; 
       }
       if (command.equals("PUMPDELAY#"))
       {
-        pump(wateringDelay);
+        potor(motorDelay);
       }
       if (command.equals("PUMPON#"))
       {
@@ -463,13 +463,13 @@ int readSerialInputCommand(String *command)
   return operationStatus;
 }
 
-void pump(int delayValue)
+void potor(int delayValue)
 {   
   digitalWrite(PUMP,HIGH);
-  Serial.println("Pump ON ");
+  Serial.println("Motor ON ");
   delay(delayValue);  
   digitalWrite(PUMP,LOW);
-  Serial.println("Pump OFF ");      
+  Serial.println("Motor OFF ");      
 }
 
 
